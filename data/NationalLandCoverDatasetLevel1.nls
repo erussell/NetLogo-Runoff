@@ -1,0 +1,21 @@
+to define-landuse-categories
+  ;
+  ; Level-1 land use codes from the 1992 National Land Cover Dataset
+  ; Manning coefficients from: 
+  ; Vieux, B. "Distributed Hydrologic Modeling Using GIS" 
+  ; Water Science and Technology Library, Volume 48, pp 115-128
+  ; http://www.springerlink.com/content/mn11410540567kjt/
+  ;
+  ; Curve numbers from http://www.ecn.purdue.edu/runoff/documentation/scs.htm
+  ; 
+  define-landuse 10 [ 101 141 196 ] 0.030 [  0  0  0  0 ] "Water" false
+  define-landuse 30 [ 178 178 178 ] 0.050 [ 49 69 79 84 ] "Barren" false 
+  define-landuse 50 [ 217 201 112 ] 0.180 [ 20 48 65 73 ] "Shrubland" false
+  define-landuse 60 [ 183 177 116 ] 0.100 [ 30 55 70 77 ] "Orchard" false
+  define-landuse 90 [ 170 207 201 ] 0.060 [  0  0  0  0 ] "Wetlands" false
+  
+  define-landuse 20 [ 255 002 026 ] 0.015 [ 65 77 85 88 ] "Developed" true
+  define-landuse 80 [ 245 255 017 ] 0.035 [ 64 75 82 85 ] "Agricultural" true
+  define-landuse 70 [ 110 255 140 ] 0.100 [ 39 61 74 80 ] "Grassland" true
+  define-landuse 40 [ 001 158 001 ] 0.100 [ 30 55 70 77 ] "Forest" true
+end
