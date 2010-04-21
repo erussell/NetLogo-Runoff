@@ -1,4 +1,4 @@
-extensions [ gis table widget ]
+extensions [ gis table widget41 ]
 globals [ landuse-code-name 
           landuse-name-code 
           landuse-name-color 
@@ -30,6 +30,7 @@ to setup
   setup-landuse-tables
   show "loading grid data..."
   set flow-direction convert-flow-directions gis:load-dataset "data/flowdirection.asc"
+  show gis:envelope-of flow-direction
   if world-width != ((floor (gis:width-of flow-direction / 2)) + 2) or world-height != ((floor (gis:height-of flow-direction / 2)) + 2)
   [ user-message (word "Please open the Settings window and set max-pxcor to " 
                        ((floor (gis:width-of flow-direction / 2)) + 1) 
@@ -49,12 +50,12 @@ to setup
   set watershed-boundary first gis:feature-list-of gis:load-dataset "data/watershed.shp"
   set border patches with [ pxcor = min-pxcor or pxcor = max-pxcor or pycor = min-pycor or pycor = max-pycor ]
   set interior patches with [ not member? self border ]
-  set watershed interior with [ gis:intersects? watershed-boundary self ]
+  set watershed interior gis:intersecting watershed-boundary ; interior with [ gis:intersects? watershed-boundary self ]
   show "loading soil type data"
   let soil-dataset gis:load-dataset "data/soilgroup.shp"
-  set soil-a gis:find-one-feature soil-dataset "SOILTYPEH" "A"
-  set soil-b gis:find-one-feature soil-dataset "SOILTYPEH" "B"
-  set soil-c gis:find-one-feature soil-dataset "SOILTYPEH" "C"
+  set soil-a gis:find-one-feature soil-dataset "SOILTYPE_H" "A"
+  set soil-b gis:find-one-feature soil-dataset "SOILTYPE_H" "B"
+  set soil-c gis:find-one-feature soil-dataset "SOILTYPE_H" "C"
   show "loading aerial photo from Terraserver..."
   carefully
   [ gis:import-wms-drawing "http://terraservice.net/ogcmap.ashx" "EPSG:4326" "DOQ" 128 ]
@@ -92,7 +93,7 @@ end
 
 to go
   if (not any? turtles) and (empty? outlet-flow) 
-  [ ask interior
+  [ ask watershed
     [ sprout 1 
       [ set size 0.75 
         set heading gis:raster-sample flow-direction self
@@ -217,7 +218,7 @@ to setup-landuse-tables
   foreach table:keys landuse-flow-velocity
   [ let velocity table:get landuse-flow-velocity ?
     table:put landuse-flow-velocity ? velocity / max-velocity ]
-  widget:set-chooser-items "draw-land-use-with" landuse-menu-values
+  widget41:set-chooser-items "draw-land-use-with" landuse-menu-values
 end
 
 
@@ -279,14 +280,6 @@ GRAPHICS-WINDOW
 1
 0
 ticks
-
-CC-WINDOW
-5
-457
-1024
-552
-Command Center
-0
 
 BUTTON
 5
@@ -755,7 +748,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 4.0.2
+NetLogo 4.1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -772,4 +765,6 @@ true
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
 
+@#$#@#$#@
+0
 @#$#@#$#@
